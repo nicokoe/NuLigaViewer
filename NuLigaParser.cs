@@ -14,6 +14,8 @@ namespace NuLigaViewer
         private static readonly ConcurrentDictionary<string, List<ClubPlayer>> _cachedClubPlayers = new();
         private static readonly ConcurrentDictionary<string, Dictionary<string, int>> TeamToClubPlayerToDwzMapping = new();
 
+        private static readonly CultureInfo _nuLigaCulture = new("de-DE");
+
         public static event Action<League, TeamPairing>? TeamPairingReportLoadedForGui;
 
         public static List<BadenRegion> ParseLeagues()
@@ -150,7 +152,7 @@ namespace NuLigaViewer
                 TeamUrl = string.IsNullOrEmpty(teamUrl) ? null : urlRoot + teamUrl,
                 Spiele = int.Parse(cells[numberOfTeams + 3].InnerText),
                 Punkte = int.Parse(cells[numberOfTeams + 4].InnerText),
-                BP = double.Parse(cells[numberOfTeams + 5].InnerText),
+                BP = double.Parse(cells[numberOfTeams + 5].InnerText, NumberStyles.Any, _nuLigaCulture),
                 BoardPointsPerRank = new double[numberOfTeams - 1]
             };
 
@@ -164,7 +166,7 @@ namespace NuLigaViewer
                     continue;
                 }
                 var value = string.IsNullOrEmpty(cells[3 + i].InnerText) ? "0" : cells[3 + i].InnerText;
-                newTeam.BoardPointsPerRank[rankIndex] = double.TryParse(value, out var result) ? result : 0;
+                newTeam.BoardPointsPerRank[rankIndex] = double.TryParse(value, NumberStyles.Any, _nuLigaCulture, out var result) ? result : 0;
                 rankIndex++;
             }
 
@@ -457,12 +459,12 @@ namespace NuLigaViewer
                     }
                 }
 
-                var lineUpPage = web.Load(lineUpUrl);
-                var playerRows = lineUpPage.DocumentNode.SelectNodes("//table[@class='result-set']")[0].SelectNodes("tr");
+                var lineUpPage = TryLoadWebResourceThreeTimes(web, lineUpUrl, "//table[@class='result-set']");
+                var playerRows = lineUpPage?[0].SelectNodes("tr");
                 var clubPlayers = new List<ClubPlayer>();
 
                 // start with 1, skip headers in 0
-                for (var row = 1; row < playerRows.Count; row++)
+                for (var row = 1; row < playerRows?.Count; row++)
                 {
                     var cells = playerRows[row].SelectNodes("th|td");
                     if (cells.Count < 6 || cells[1].InnerText == "DWZ")
@@ -504,8 +506,7 @@ namespace NuLigaViewer
 
         public static Player? ParseClubPlayerDetails(string playerUrl, string name, string? teamName)
         {
-            var playerDoc = web.Load(playerUrl);
-            var tables = playerDoc.DocumentNode.SelectNodes("//table[@class='result-set']");
+            var tables = TryLoadWebResourceThreeTimes(web, playerUrl, "//table[@class='result-set']");
             if (tables == null || tables.Count < 1)
             {
                 return null;
