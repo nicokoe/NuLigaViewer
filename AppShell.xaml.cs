@@ -6,6 +6,7 @@
         {
             InitializeComponent();
 
+            Routing.RegisterRoute("settings", typeof(Pages.SettingsPage));
             Routing.RegisterRoute("teampairing", typeof(Pages.TeamPairingPage));
             Routing.RegisterRoute("playerdetails", typeof(Pages.PlayerPage));
         }
