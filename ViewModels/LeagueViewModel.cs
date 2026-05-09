@@ -222,7 +222,7 @@ namespace NuLigaViewer.ViewModels
 
         private static void SortTeams(ref Team[] teams)
         {
-            teams.Sort((a, b) =>
+            Array.Sort(teams, (a, b) =>
             {
                 int pointsComparison = b.Punkte.CompareTo(a.Punkte);
                 if (pointsComparison != 0)

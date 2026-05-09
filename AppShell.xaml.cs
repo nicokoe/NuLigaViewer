@@ -1,4 +1,6 @@
-﻿namespace NuLigaViewer
+﻿using System.Linq;
+
+namespace NuLigaViewer
 {
     public partial class AppShell : Shell
     {
@@ -26,7 +28,7 @@
             }
 
             var targetPath = e.Target.Location?.ToString() ?? string.Empty;
-            var levels = targetPath.Trim('/').Count('/') - 1;
+            var levels = targetPath.Trim('/').Count(c => c == '/') - 1;
 
             if (levels < 1)
             {

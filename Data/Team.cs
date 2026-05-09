@@ -54,12 +54,15 @@ namespace NuLigaViewer.Data
                 {
                     continue;
                 }
-                player.PlayerInfoPerGameDay?[gameDay.RoundByCount - 1] = new PlayerGameDayInfo
+                if (player.PlayerInfoPerGameDay != null)
                 {
-                    Pairing = pairings.First(),
-                    SecondPairing = pairings.Count() > 1 ? pairings.Last() : null,
-                    PlayerIsInHomeTeam = isHomeTeam
-                };
+                    player.PlayerInfoPerGameDay[gameDay.RoundByCount - 1] = new PlayerGameDayInfo
+                    {
+                        Pairing = pairings.First(),
+                        SecondPairing = pairings.Count() > 1 ? pairings.Last() : null,
+                        PlayerIsInHomeTeam = isHomeTeam
+                    };
+                }
             }
         }
 
