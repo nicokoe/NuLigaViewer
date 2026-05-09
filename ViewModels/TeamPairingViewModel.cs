@@ -21,9 +21,9 @@ namespace NuLigaViewer.ViewModels
         public int Runde => _teamPairing.Runde;
         public DateTime Datum => _teamPairing.Datum;
         public string Title => _teamPairing.Title;
-        public string? GastMannschaft => _teamPairing.GastMannschaft;
+        public string? GastMannschaft => Shortener.Instance.ShortenClubName(_teamPairing.GastMannschaft); 
         public double GastMannschaftDWZ => _teamPairing.GastMannschaftDWZ;
-        public string? HeimMannschaft => _teamPairing.HeimMannschaft;
+        public string? HeimMannschaft => Shortener.Instance.ShortenClubName(_teamPairing.HeimMannschaft);
         public double HeimMannschaftDWZ => _teamPairing.HeimMannschaftDWZ;
         public string? BrettPunkte => _teamPairing.BrettPunkte;
         public GameReport? Report => _teamPairing.Report;

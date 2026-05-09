@@ -19,7 +19,7 @@ namespace NuLigaViewer.ViewModels
         public string? ClubLineUpsUrl => _team.ClubLineUpsUrl;
         public Qualification Qualification => _team.Qualification;
         public int Rank { get; set; }
-        public string Name => _team.Name;
+        public string Name => Shortener.Instance.ShortenClubName(_team.Name);
         public int Games => _team.Spiele;
         public int Points => _team.Punkte;
         public double BoardPointsSum => _team.BP;
