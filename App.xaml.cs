@@ -7,6 +7,9 @@ namespace NuLigaViewer
         public App()
         {
             InitializeComponent();
+            //   TODO T1
+            if (Application.Current != null)
+                Application.Current.Resources["AppFontFamily"] = "SemiCondensed";
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
