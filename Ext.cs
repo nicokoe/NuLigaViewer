@@ -13,7 +13,7 @@ public static class Ext
     /// <param name="pairseperator">Paarseperator</param>
     /// <param name="keyvalueseperator">Wertpaarseperator</param>
     /// <returns>Dictionary Objekt</returns>
-    public static Dictionary<string, string> ToDictionary(this string s, string pairseperator, string keyvalueseperator, 
+    public static Dictionary<string, string> ToDictionary(this string s, string pairseperator, string keyvalueseperator,
         IEqualityComparer<string>? eqComparer = null)
     {
         var d = eqComparer == null ? new Dictionary<string, string>() : new Dictionary<string, string>(eqComparer);
@@ -30,5 +30,18 @@ public static class Ext
             }
         }
         return d;
+    }
+
+    /// <summary> Verkürzt einen String auf maxLength, falls nötig. Falls ellipsis != null, hänge ellipsis an.</summary>
+    public static string Truncate(this string value, int maxLength, string ellipsis)
+    {
+        if (string.IsNullOrEmpty(value))
+            return value;
+        if (ellipsis == null)
+            ellipsis = "";
+        if (maxLength < ellipsis.Length)
+            throw new ArgumentOutOfRangeException();
+        return value.Length <= maxLength ? value :
+            value.Substring(0, maxLength - ellipsis.Length) + ellipsis;
     }
 }
