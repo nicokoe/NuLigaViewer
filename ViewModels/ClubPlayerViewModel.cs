@@ -13,7 +13,7 @@ namespace NuLigaViewer.ViewModels
         }
 
         public int Rang => _player.Rang;
-        public string? Name => _player.Name;
+        public string? Name => Shortener.Instance.ShortenPlayerName(_player.Name);
         public int? DWZ => _player.DWZ;
         public int? Number => _player.Number;
         public string? Status => _player.Status;

@@ -13,7 +13,7 @@ namespace NuLigaViewer.ViewModels
         }
 
         public int Rang { get; set; }
-        public string? Name => _player.Name;
+        public string? Name => Shortener.Instance.ShortenPlayerName(_player.Name);
         public int? DWZ => _player.DWZ == 1000 ? null : _player.DWZ;
         public string? Verein => Shortener.Instance.ShortenClubName(_player.TeamName);
         public double Punkte => _player.Points;

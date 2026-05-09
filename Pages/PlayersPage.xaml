@@ -57,7 +57,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Column="0" Text="{Binding Brett}" VerticalTextAlignment="Center" />
-                            <Label Grid.Column="1" Text="{Binding Spieler}" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="1" Text="{Binding UISpieler}" VerticalTextAlignment="Center" />
                             <Label Grid.Column="2" Text="{Binding DWZ}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 
                             <HorizontalStackLayout Grid.Column="3" BindableLayout.ItemsSource="{Binding Rounds}" Spacing="3" VerticalOptions="Center">

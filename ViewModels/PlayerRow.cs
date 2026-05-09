@@ -15,7 +15,13 @@ namespace NuLigaViewer.ViewModels
         public ICommand BackButtonCommand => _backButtonCommand;
 
         public int Brett { get; set; }
-        public string Spieler { get; set; } = string.Empty;
+        public string Spieler 
+        { 
+            get { return spieler; }
+            set { spieler = value; UISpieler = Shortener.Instance.ShortenPlayerName(value); }
+        }
+        private string spieler = string.Empty;
+        public string UISpieler { get; private set; } = string.Empty;
         public int? DWZ { get; set; }
         public List<string> Rounds { get; set; } = new();
         public List<PlayerGameDayInfo?> PlayerGameDayInfos { get; set; } = new();
