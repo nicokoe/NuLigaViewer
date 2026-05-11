@@ -6,11 +6,10 @@
 
     <Grid Padding="8">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Text="work in progress"
-               FontSize="Large"
-               FontAttributes="Bold"
-               HorizontalOptions="Start" />
+        <Picker Grid.Row="0" Title="Gewünschte Textgröße:" HeightRequest="70"
+                ItemsSource="{Binding AvailableTextSizes}"
+                SelectedItem="{Binding TextSize}" />
     </Grid>
 </ContentPage>
