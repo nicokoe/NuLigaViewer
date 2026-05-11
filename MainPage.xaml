@@ -3,6 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NuLigaViewer.MainPage"
              Title="Schachliga Baden">
+ 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding SettingsCommand}" IconImageSource="settings.png"/>
+    </ContentPage.ToolbarItems>
 
     <Grid Padding="4">
         <Grid.RowDefinitions>

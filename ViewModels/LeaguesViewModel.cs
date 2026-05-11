@@ -1,6 +1,7 @@
 using NuLigaViewer.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace NuLigaViewer.ViewModels
 {
@@ -10,7 +11,16 @@ namespace NuLigaViewer.ViewModels
 
         public LeaguesViewModel(IEnumerable<BadenRegion> region)
         {
+            _settingsCommand = new RelayCommand(GoToSettings, () => true);
             Regions = new ObservableCollection<BadenRegion>(region);
+        }
+
+        private readonly RelayCommand _settingsCommand;
+        public ICommand SettingsCommand => _settingsCommand;
+
+        public async static Task GoToSettings()
+        {
+            await Shell.Current.GoToAsync($"settings");
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
