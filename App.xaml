@@ -5,7 +5,7 @@
              x:Class="NuLigaViewer.App">
     <Application.Resources>
         <ResourceDictionary>
-            <x:String x:Key="AppFontFamily">BarlowRegular</x:String>
+            <x:String x:Key="AppFontFamily">OpenSansRegular</x:String>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
