@@ -247,7 +247,6 @@ public class InternetFileCache
 
     private readonly TimeSpan _maxAge1, _maxAge2, _maxAge3;
     private readonly long _maxSizeBytes;
-    private readonly string[] _preferredFileStarts;
 
     private readonly string _cacheDir;
     private readonly Dictionary<string, SemaphoreSlim> _locks = new();
