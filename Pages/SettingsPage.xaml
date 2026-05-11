@@ -5,12 +5,26 @@
              Title="Einstellungen">
 
     <Grid Padding="8">
+        <Grid.Resources>
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Text="work in progress"
-               FontSize="Large"
-               FontAttributes="Bold"
-               HorizontalOptions="Start" />
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="0" Grid.Column="0">Schriftbreite</Label>
+        <Picker x:Name="DDLFontWidth" Grid.Row="0" Grid.Column="1" Title="" SelectedIndexChanged="OnFontWidthChanged">
+            <Picker.Items>
+                <x:String>Normal</x:String>
+                <x:String>95 %</x:String>
+                <x:String>88 %</x:String>
+                <x:String>78 %</x:String>
+                <x:String>65 %</x:String>
+            </Picker.Items>
+        </Picker>
+
     </Grid>
 </ContentPage>
