@@ -398,8 +398,11 @@ namespace NuLigaViewer
             {
                 try
                 {
-                    var teamDoc = web.Load(url);
-                    var resultSetList = teamDoc.DocumentNode.SelectNodes(nodeRequest);
+                    var html = InternetFileCache.Instance.Get(url);
+                    var doc = new HtmlAgilityPack.HtmlDocument();
+                    doc.LoadHtml(html);
+
+                    var resultSetList = doc.DocumentNode.SelectNodes(nodeRequest);
                     if (resultSetList != null)
                     {
                         return resultSetList;
