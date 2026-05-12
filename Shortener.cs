@@ -22,7 +22,7 @@ public class Shortener
     public enum Flags
     {
         None, ClubNamePrefix = 1, ClubNameBad = 2,
-        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16,
+        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16, 
         AbbrevWithPoint = 32
     }
 
