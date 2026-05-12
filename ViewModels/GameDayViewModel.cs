@@ -12,9 +12,9 @@ namespace NuLigaViewer.ViewModels
             _teamPairing = teamPairing ?? throw new ArgumentNullException(nameof(teamPairing));
         }
         public int Runde => _teamPairing.Runde;
-        public string? HeimMannschaft => _teamPairing.HeimMannschaft;
+        public string? HeimMannschaft => Shortener.Instance.ShortenClubName(_teamPairing.HeimMannschaft);
         public double HeimMannschaftDWZ => _teamPairing.HeimMannschaftDWZ;
-        public string? GastMannschaft => _teamPairing.GastMannschaft;
+        public string? GastMannschaft => Shortener.Instance.ShortenClubName(_teamPairing.GastMannschaft);
         public double GastMannschaftDWZ => _teamPairing.GastMannschaftDWZ;
         public string? BrettPunkte => _teamPairing.BrettPunkte;
 
