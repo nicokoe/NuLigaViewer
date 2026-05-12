@@ -21,6 +21,10 @@ namespace NuLigaViewer.Pages
                     var pickerItem = pickerFontMap.FirstOrDefault(kv => kv.Value == font);
                     if (pickerItem.Key != null)
                         DDLFontWidth.SelectedItem = pickerItem.Key;
+
+                    int scn = Convert.ToInt16("" + Shortener.Instance.ShortenClubNameChar) - 1;
+                    DDLShortenClubName.SelectedIndex = scn;
+
                 }
                 catch (Exception)
                 {
@@ -42,5 +46,16 @@ namespace NuLigaViewer.Pages
         static readonly Dictionary<string, string> pickerFontMap =
              "Normal=OpenSansRegular,95 %=BarlowRegular,88 %=SemiCondensed,78 %=Condensed,65 %=ExtraCondensed"
                 .ToDictionary(",", "=");
+
+
+
+        private void OnShortenClubNameChanged(object sender, EventArgs e)
+        {
+            var picker = (Picker)sender;
+            var selected = (string)picker.SelectedItem;
+            var c = "" + selected[0];
+            Shortener.Instance.SetShortenClubName(c);
+            Preferences.Set("shortenClubName", c);
+        }
     }
 }

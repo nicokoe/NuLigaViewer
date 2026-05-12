@@ -22,7 +22,7 @@ public class Shortener
     public enum Flags
     {
         None, ClubNamePrefix = 1, ClubNameBad = 2,
-        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16, 
+        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16,
         AbbrevWithPoint = 32
     }
 
@@ -98,6 +98,27 @@ public class Shortener
         }
         return name;
     }
+
+    public void SetShortenClubName(string c)
+    {
+        ShortenClubNameChar = c;
+        if ("23456".Contains(c))
+        {
+            NameFlags |= Flags.ClubNamePrefix | Flags.ClubNameBad | Flags.AbbrevWithPoint;
+            var dd = "3:10 4:8 5:6 6:4".ToDictionary(" ", ":");
+            if (dd.TryGetValue(c, out string? n))
+                ClubNameNumChars = Convert.ToInt16(n);
+            else
+                ClubNameNumChars = 0;
+        }
+        else
+        {
+            NameFlags &= ~(Flags.ClubNamePrefix | Flags.ClubNameBad);
+            ClubNameNumChars = 0;
+        }
+    }
+
+    public string ShortenClubNameChar { get; private set; } = "1";
 
     public Flags NameFlags { get; set; } = Flags.ClubNamePrefix | Flags.ClubNameBad | Flags.PlayerFirstName1Char | Flags.AbbrevWithPoint;
     public int ClubNameNumChars { get; set; } = 7;
