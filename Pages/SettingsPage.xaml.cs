@@ -25,6 +25,8 @@ namespace NuLigaViewer.Pages
                     int scn = Convert.ToInt16("" + Shortener.Instance.ShortenClubNameChar) - 1;
                     DDLShortenClubName.SelectedIndex = scn;
 
+                    int spn = Convert.ToInt16("" + Shortener.Instance.ShortenPlayerNameChar) - 1;
+                    DDLShortenPlayerName.SelectedIndex = spn;
                 }
                 catch (Exception)
                 {
@@ -56,6 +58,15 @@ namespace NuLigaViewer.Pages
             var c = "" + selected[0];
             Shortener.Instance.SetShortenClubName(c);
             Preferences.Set("shortenClubName", c);
+        }
+
+        private void OnShortenPlayerNameChanged(object sender, EventArgs e)
+        {
+            var picker = (Picker)sender;
+            var selected = (string)picker.SelectedItem;
+            var c = "" + selected[0];
+            Shortener.Instance.SetShortenPlayerName(c);
+            Preferences.Set("shortenPlayerName", c);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace NuLigaViewer
             {
                 Application.Current.Resources["AppFontFamily"] = Preferences.Get("fontname", "OpenSansRegular");
                 Shortener.Instance.SetShortenClubName(Preferences.Get("shortenClubName", "0"));
+                Shortener.Instance.SetShortenPlayerName(Preferences.Get("shortenPlayerName", "1"));
             }
         }
 

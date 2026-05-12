@@ -22,8 +22,7 @@ public class Shortener
     public enum Flags
     {
         None, ClubNamePrefix = 1, ClubNameBad = 2,
-        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16,
-        AbbrevWithPoint = 32
+        AbbrevWithPoint = 32,
     }
 
     public string? ShortenClubName(string? name)
@@ -90,17 +89,36 @@ public class Shortener
 
     public string? ShortenPlayerName(string? name)
     {
-        if (name != null)
+        if (name != null && (PlayerFirstNameNumChars >= 0 || PlayerSurNameNumChars >= 0))
         {
             var m = rePlayer.Match(name);
             if (m.Success)
             {
-                if ((NameFlags & Flags.PlayerFirstNameKill) != 0)
-                    name = m.Groups[1].Value;
-                else if ((NameFlags & Flags.PlayerFirstName1Char) != 0)
-                    name = m.Groups[1].Value + ", " + m.Groups[2].Value.Truncate(2, Ellipsis);
-                else if ((NameFlags & Flags.PlayerFirstName3Chars) != 0)
-                    name = m.Groups[1].Value + ", " + m.Groups[2].Value.Truncate(4, Ellipsis);
+                var firstName = m.Groups[2].Value;
+                var surName = m.Groups[1].Value;
+
+                if (PlayerFirstNameNumChars > 0)
+                    firstName = ", " + firstName.Truncate(PlayerFirstNameNumChars, Ellipsis);
+                else if (PlayerFirstNameNumChars == 0)
+                    firstName = "";
+                else if (PlayerFirstNameNumChars == -1)
+                    firstName = ", " + firstName;
+
+                if (PlayerSurNameNumChars > 0)
+                {
+                    // Wenn ich schon den Nachnamen abkürzen muß, werf ich auch Prof. Dr. weg. 
+                    m = reProfDr.Match(surName);
+                    if (m.Success)
+                    {
+                        surName = m.Groups["name"].Value;
+                        if (surName.Length + m.Groups["dr"].Value.Length <= PlayerSurNameNumChars)
+                            surName = m.Groups["dr"].Value + surName;
+
+                    }
+                    surName = surName.Truncate(PlayerSurNameNumChars, Ellipsis);
+                }
+
+                name = surName + firstName;
             }
         }
         return name;
@@ -127,10 +145,33 @@ public class Shortener
 
     public string ShortenClubNameChar { get; private set; } = "1";
 
-    public Flags NameFlags { get; set; } = Flags.ClubNamePrefix | Flags.ClubNameBad | Flags.PlayerFirstName1Char | Flags.AbbrevWithPoint;
-    public int ClubNameNumChars { get; set; } = 7;
-    public bool IsClubNameWithPoint => (NameFlags & Flags.AbbrevWithPoint) != 0;
-    private string Ellipsis => IsClubNameWithPoint ? "." : "";
+    public void SetShortenPlayerName(string c)
+    {
+        ShortenPlayerNameChar = c;
+        PlayerFirstNameNumChars = -1;
+        PlayerSurNameNumChars = -1;
+        if ("234567".Contains(c))
+        {
+            NameFlags |= Flags.AbbrevWithPoint;
+            var dd = "2:6 3:4 4:2 5:0 6:0 7:0".ToDictionary(" ", ":");
+            if (dd.TryGetValue(c, out string? n))
+                PlayerFirstNameNumChars = Convert.ToInt16(n);
+            var ds = "6:10 7:8".ToDictionary(" ", ":");
+            if (ds.TryGetValue(c, out string? m))
+                PlayerSurNameNumChars = Convert.ToInt16(m);
+        }
+    }
+
+    public string ShortenPlayerNameChar { get; private set; } = "1";
+
+    public Flags NameFlags { get; set; } = Flags.ClubNamePrefix | Flags.ClubNameBad | Flags.AbbrevWithPoint;
+    private int ClubNameNumChars { get; set; } = 7;
+    private int PlayerFirstNameNumChars { get; set; } = 5;
+    private int PlayerSurNameNumChars { get; set; } = -1;
+
+
+    public bool IsAbbrevWithPoint => (NameFlags & Flags.AbbrevWithPoint) != 0;
+    private string Ellipsis => IsAbbrevWithPoint ? "." : "";
 
     static readonly Regex rePrefix = new Regex(@"^(?:[A-Z]+\s+)(.*)");
     static readonly Regex rePrefix2 = new Regex(@"^(?:[A-Z]+\s+)(\S+)\s*/\s*(?:[A-Z]+\s+)(\S+)\s*(\s\d*)$");
@@ -140,5 +181,6 @@ public class Shortener
     static readonly Regex reTrunc3 = new Regex(@"^(\S+)\s*(\s[A-Z]+)(\s\d*)$");
     static readonly Regex reTrunc4 = new Regex(@"^(\S+\s\D+)(\s\d*)$");
     static readonly Regex rePlayer = new Regex(@"^\s*(.*),\s*(.*)\s*$");
+    static readonly Regex reProfDr = new Regex(@"^(?:Prof\.\s*)?(?<dr>Dr\.\s*)?(?<name>.*)");
 
 }

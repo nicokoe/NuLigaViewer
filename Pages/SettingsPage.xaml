@@ -39,5 +39,18 @@
                 <x:String>6 - Hin. 2</x:String>
             </Picker.Items>
         </Picker>
+
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="2" Grid.Column="0">Abkürzung  Dr. Bourdonnais, Louis-Charles Mahé</Label>
+        <Picker x:Name="DDLShortenPlayerName" Grid.Row="2" Grid.Column="1" Title="" SelectedIndexChanged="OnShortenPlayerNameChanged">
+            <Picker.Items>
+                <x:String>1 - Keine Abkürzung</x:String>
+                <x:String>2 - Dr. Bourdonnais, Louis.</x:String>
+                <x:String>3 - Dr. Bourdonnais, Lou.</x:String>
+                <x:String>4 - Dr. Bourdonnais, L.</x:String>
+                <x:String>5 - Dr. Bourdonnais</x:String>
+                <x:String>6 - Bourdonna.</x:String>
+                <x:String>7 - Bourdon.</x:String>
+            </Picker.Items>
+        </Picker>
     </Grid>
 </ContentPage>
