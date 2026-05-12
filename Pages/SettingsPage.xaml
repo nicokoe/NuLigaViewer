@@ -5,12 +5,52 @@
              Title="Einstellungen">
 
     <Grid Padding="8">
+        <Grid.Resources>
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Text="work in progress"
-               FontSize="Large"
-               FontAttributes="Bold"
-               HorizontalOptions="Start" />
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="0" Grid.Column="0">Schriftbreite</Label>
+        <Picker x:Name="DDLFontWidth" Grid.Row="0" Grid.Column="1" Title="" SelectedIndexChanged="OnFontWidthChanged">
+            <Picker.Items>
+                <x:String>Normal</x:String>
+                <x:String>95 %</x:String>
+                <x:String>88 %</x:String>
+                <x:String>78 %</x:String>
+                <x:String>65 %</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="1" Grid.Column="0">Abkürzung  SV Bad Hintertupfingen 2</Label>
+        <Picker x:Name="DDLShortenClubName" Grid.Row="1" Grid.Column="1" Title="" SelectedIndexChanged="OnShortenClubNameChanged">
+            <Picker.Items>
+                <x:String>1 - Keine Abkürzung</x:String>
+                <x:String>2 - Hintertupfingen 2</x:String>
+                <x:String>3 - Hintertup. 2</x:String>
+                <x:String>4 - Hintert. 2</x:String>
+                <x:String>5 - Hinte. 2</x:String>
+                <x:String>6 - Hin. 2</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="2" Grid.Column="0">Abkürzung  Dr. Bourdonnais, Louis-Charles Mahé</Label>
+        <Picker x:Name="DDLShortenPlayerName" Grid.Row="2" Grid.Column="1" Title="" SelectedIndexChanged="OnShortenPlayerNameChanged">
+            <Picker.Items>
+                <x:String>1 - Keine Abkürzung</x:String>
+                <x:String>2 - Dr. Bourdonnais, Louis.</x:String>
+                <x:String>3 - Dr. Bourdonnais, Lou.</x:String>
+                <x:String>4 - Dr. Bourdonnais, L.</x:String>
+                <x:String>5 - Dr. Bourdonnais</x:String>
+                <x:String>6 - Bourdonna.</x:String>
+                <x:String>7 - Bourdon.</x:String>
+            </Picker.Items>
+        </Picker>
     </Grid>
 </ContentPage>
