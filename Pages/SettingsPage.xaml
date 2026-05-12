@@ -28,15 +28,15 @@
             </Picker.Items>
         </Picker>
 
-        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="1" Grid.Column="0">Abkürzung  SV Bad Hintertupfingen 1</Label>
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="1" Grid.Column="0">Abkürzung  SV Bad Hintertupfingen 2</Label>
         <Picker x:Name="DDLShortenClubName" Grid.Row="1" Grid.Column="1" Title="" SelectedIndexChanged="OnShortenClubNameChanged">
             <Picker.Items>
                 <x:String>1 - Keine Abkürzung</x:String>
-                <x:String>2 - Hintertupfingen 1</x:String>
-                <x:String>3 - Hintertup. 1</x:String>
-                <x:String>4 - Hintert. 1</x:String>
-                <x:String>5 - Hinte. 1</x:String>
-                <x:String>6 - Hin. 1</x:String>
+                <x:String>2 - Hintertupfingen 2</x:String>
+                <x:String>3 - Hintertup. 2</x:String>
+                <x:String>4 - Hintert. 2</x:String>
+                <x:String>5 - Hinte. 2</x:String>
+                <x:String>6 - Hin. 2</x:String>
             </Picker.Items>
         </Picker>
     </Grid>

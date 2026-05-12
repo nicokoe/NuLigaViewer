@@ -22,7 +22,7 @@ public class Shortener
     public enum Flags
     {
         None, ClubNamePrefix = 1, ClubNameBad = 2,
-        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16, 
+        PlayerFirstNameKill = 4, PlayerFirstName1Char = 8, PlayerFirstName3Chars = 16,
         AbbrevWithPoint = 32
     }
 
@@ -32,9 +32,15 @@ public class Shortener
         {
             if ((NameFlags & Flags.ClubNamePrefix) != 0)
             {
-                var m = rePrefix.Match(name);  // OSG Baden-Baden => Baden-Baden   u.ä.
+                var m = rePrefix2.Match(name); // SC Wiesloch / SF Baiertal 1  => Wiesloch/Baiertal 1
                 if (m.Success)
-                    name = m.Groups[1].Value;
+                    name = m.Groups[1].Value + "/" + m.Groups[2].Value + m.Groups[3].Value;
+                else
+                {
+                    m = rePrefix.Match(name);  // OSG Baden-Baden 1 => Baden-Baden 1  u.ä.
+                    if (m.Success)
+                        name = m.Groups[1].Value;
+                }
             }
 
             if ((NameFlags & Flags.ClubNameBad) != 0)
@@ -46,14 +52,16 @@ public class Shortener
 
             if (ClubNameNumChars > 0)
             {
-                var m = reTrunc1.Match(name); // Niefern-Öschelbronn u.ä.
+                // Wiesloch/Baiertal 4, Niefern-Öschelbronn 2 o.ä.
+                // - Die führenden SC/SF.. sind schon oben weg gemacht worden.
+                var m = reTrunc1.Match(name);
                 if (m.Success)
                 {
                     var k = ClubNameNumChars / 2;
-                    var l = ClubNameNumChars - k - 1;
-                    name = m.Groups[1].Value.Truncate(k, Ellipsis) + "-" +
-                        m.Groups[2].Value.Truncate(l, Ellipsis) +
-                        m.Groups[3].Value;
+                    var l = ClubNameNumChars - k;
+                    name = m.Groups[1].Value.Truncate(k, Ellipsis) + m.Groups[2].Value +
+                        m.Groups[3].Value.Truncate(l, Ellipsis) +
+                        m.Groups[4].Value;
                 }
                 else
                 {
@@ -63,7 +71,6 @@ public class Shortener
                             + m.Groups[2].Value;
                     else
                     {
-
                         m = reTrunc3.Match(name);  // Heilbronner SV u.ä.
                         if (m.Success)
                             name = m.Groups[1].Value.Truncate(ClubNameNumChars, Ellipsis) + m.Groups[3].Value;
@@ -126,8 +133,9 @@ public class Shortener
     private string Ellipsis => IsClubNameWithPoint ? "." : "";
 
     static readonly Regex rePrefix = new Regex(@"^(?:[A-Z]+\s+)(.*)");
+    static readonly Regex rePrefix2 = new Regex(@"^(?:[A-Z]+\s+)(\S+)\s*/\s*(?:[A-Z]+\s+)(\S+)\s*(\s\d*)$");
     static readonly Regex reBad = new Regex(@"^(\s*)(?:Bad\s+)(.*)");
-    static readonly Regex reTrunc1 = new Regex(@"^(\S+)-(\S+)\s*(\s\d*)$");
+    static readonly Regex reTrunc1 = new Regex(@"^(\S+)\s*([-/])\s*(\S+)\s*(\s\d*)$");
     static readonly Regex reTrunc2 = new Regex(@"^(\S+)\s*(\s\d*)$");
     static readonly Regex reTrunc3 = new Regex(@"^(\S+)\s*(\s[A-Z]+)(\s\d*)$");
     static readonly Regex reTrunc4 = new Regex(@"^(\S+\s\D+)(\s\d*)$");
