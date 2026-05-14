@@ -3,7 +3,6 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
 #endif
-using Microsoft.Extensions.DependencyInjection;
 
 namespace NuLigaViewer
 {
@@ -12,6 +11,10 @@ namespace NuLigaViewer
         public App()
         {
             InitializeComponent();
+            if (Current != null)
+            {
+                Current.Resources["AppFontFamily"] = Preferences.Default.Get("fontname", "OpenSansRegular");
+            }
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

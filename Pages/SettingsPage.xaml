@@ -5,12 +5,16 @@
              Title="Einstellungen">
 
     <Grid Padding="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Text="work in progress"
-               FontSize="Large"
-               FontAttributes="Bold"
-               HorizontalOptions="Start" />
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="0" Grid.Column="0">Schriftbreite</Label>
+        <Picker Grid.Row="0" Grid.Column="1" Title=""
+                ItemsSource="{Binding FontWidths}"
+                SelectedItem="{Binding FontWidth}" />
     </Grid>
 </ContentPage>
