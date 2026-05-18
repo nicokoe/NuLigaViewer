@@ -42,7 +42,7 @@ namespace NuLigaViewer
                 try
                 {
                     var url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+25%2F26";
-                    regions.Add(new BadenRegion { Name = region, Leagues = ParseLeaguesFromUrl(web, url) });
+                    regions.Add(new BadenRegion(name: region, leagues: ParseLeaguesFromUrl(web, url)));
                 }
                 catch (Exception e)
                 {

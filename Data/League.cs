@@ -1,9 +1,13 @@
 namespace NuLigaViewer.Data
 {
-    public class BadenRegion
+    public class BadenRegion : List<League>
     {
-        public required string Name { get; set; }
-        public required List<League> Leagues { get; set; }
+        public string Name { get; set; }
+
+        public BadenRegion(string name, List<League> leagues) : base(leagues)
+        {
+            Name = name;
+        }
     }
 
     public class League

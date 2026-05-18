@@ -9,10 +9,10 @@ namespace NuLigaViewer.ViewModels
     {
         public ObservableCollection<BadenRegion> Regions { get; }
 
-        public LeaguesViewModel(IEnumerable<BadenRegion> region)
+        public LeaguesViewModel(IEnumerable<BadenRegion> regions)
         {
             _settingsCommand = new RelayCommand(GoToSettings, () => true);
-            Regions = new ObservableCollection<BadenRegion>(region);
+            Regions = new ObservableCollection<BadenRegion>(regions);
         }
 
         private readonly RelayCommand _settingsCommand;
