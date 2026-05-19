@@ -11,10 +11,10 @@ namespace NuLigaViewer
 
             using (HttpClient client = new())
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
+                var content = await InternetFileCache.Instance.GetAsync(url);
+
+                if (content != null)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
                     var contentLines = content.Split(Environment.NewLine);
 
                     foreach (var line in contentLines)
