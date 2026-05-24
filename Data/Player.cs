@@ -4,6 +4,8 @@ namespace NuLigaViewer.Data
     {
         public int Brett { get; set; }
         public string? Name { get; set; }
+        public string? PlayerUrl { get; set; }
+        public int? MemberNumber { get; set; }
         public int DWZ { get; set; }
 
         public int Games { get; set; }
