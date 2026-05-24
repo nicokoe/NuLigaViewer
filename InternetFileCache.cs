@@ -9,7 +9,6 @@ public class InternetFileCache
 {
     public static readonly InternetFileCache Instance;
 
-
     static InternetFileCache()
     {
         _urlRegexe = new();
@@ -77,7 +76,9 @@ public class InternetFileCache
 
                 // 1. Frisch genug => direkt zurückgeben
                 if (age < _maxAge1)
+                {
                     return await File.ReadAllTextAsync(path);
+                }
 
                 // 2. Mittelalt => zurückgeben + Hintergrund-Refresh
                 if (age < _maxAge2)
@@ -106,8 +107,8 @@ public class InternetFileCache
             }
 
             // Datei existiert nicht oder ist zu alt => neu laden
-            using var http = new HttpClient();
-            string downloaded = await http.GetStringAsync(url);
+            using var httpClient = new HttpClient();
+            string downloaded = await httpClient.GetStringAsync(url);
             await File.WriteAllTextAsync(path, downloaded);
             return downloaded;
         }
@@ -203,7 +204,9 @@ public class InternetFileCache
             {
                 var age = DateTime.Now - file.LastWriteTime;
                 if (age > _maxAge3)
+                {
                     file.Delete();
+                }
             }
             catch { }
         }

@@ -11,7 +11,11 @@ namespace NuLigaViewer
 
             using (HttpClient client = new())
             {
+#if DEBUG
                 var content = await InternetFileCache.Instance.GetAsync(url);
+#else
+                var content = await client.GetStringAsync(url);
+#endif
 
                 if (content != null)
                 {

@@ -398,9 +398,13 @@ namespace NuLigaViewer
             {
                 try
                 {
+#if DEBUG
                     var html = InternetFileCache.Instance.Get(url);
-                    var doc = new HtmlAgilityPack.HtmlDocument();
+                    var doc = new HtmlDocument();
                     doc.LoadHtml(html);
+#else
+                    var doc = web.Load(url);
+#endif
 
                     var resultSetList = doc.DocumentNode.SelectNodes(nodeRequest);
                     if (resultSetList != null)
