@@ -4,9 +4,9 @@ namespace NuLigaViewer
 {
     public static class DewisAccess
     {
-        public static async Task<Dictionary<string, DewisClubPlayer>?> GetClubPlayers(string zpsNumber)
+        public static async Task<Dictionary<int, DewisClubPlayer>?> GetClubPlayers(string zpsNumber)
         {
-            var players = new Dictionary<string, DewisClubPlayer>();
+            var players = new Dictionary<int, DewisClubPlayer>();
             var url = $"https://www.schachbund.de/php/dewis/verein.php?zps={zpsNumber}&format=csv";
 
             using (HttpClient client = new())
@@ -36,7 +36,8 @@ namespace NuLigaViewer
                         var nn = splittedEntries[1];
                         var vn = splittedEntries[2];
 
-                        players[$"{nn}, {vn}"] = new DewisClubPlayer
+                        int memberNumber = int.Parse(splittedEntries[5]);
+                        players[memberNumber] = new DewisClubPlayer
                         {
                             Id = int.TryParse(splittedEntries[0], out var playerId) ? playerId : null,
                             Nachname = nn,
