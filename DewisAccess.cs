@@ -68,6 +68,16 @@ namespace NuLigaViewer
                 if (content != null)
                 {
                     var contentLines = content.Split(Environment.NewLine);
+                    if (league.Name.Contains("BWL"))
+                    {
+                        var bwLeagueLine = contentLines.LastOrDefault(line => line.Contains("BW-Liga"));
+                        if (bwLeagueLine == null)
+                        {
+                            return null;
+                        }
+
+                        return ParseClubPlayerLeagueDetails(bwLeagueLine.Split('|'));
+                    }
 
                     var skipUntilTournamentLines = true;
                     foreach (var line in contentLines)
@@ -92,18 +102,7 @@ namespace NuLigaViewer
                             continue;
                         }
 
-                        int? dwzOld = int.TryParse(splittedEntries[2], out var dwz) ? dwz : null;
-                        int? opponentDwz = int.TryParse(splittedEntries[8], out var opponentDwzValue) ? opponentDwzValue : null;
-                        int? dwzNew = int.TryParse(splittedEntries[10], out var dwzNewValue) ? dwzNewValue : null;
-                        int? performance = int.TryParse(splittedEntries[12], out var performanceValue) ? performanceValue : null;
-
-                        return new DewisClubPlayerLeagueDetails
-                        {
-                            OldDWZ = dwzOld,
-                            AverageOpponentDWZ = opponentDwz,
-                            NewDWZ = dwzNew,
-                            Performance = performance
-                        };
+                        return ParseClubPlayerLeagueDetails(splittedEntries);
                     }
                 }
             }
@@ -111,15 +110,27 @@ namespace NuLigaViewer
             return null;
         }
 
+        private static DewisClubPlayerLeagueDetails ParseClubPlayerLeagueDetails(string[] splittedEntries)
+        {
+            int? dwzOld = int.TryParse(splittedEntries[2], out var dwz) ? dwz : null;
+            int? opponentDwz = int.TryParse(splittedEntries[8], out var opponentDwzValue) ? opponentDwzValue : null;
+            int? dwzNew = int.TryParse(splittedEntries[10], out var dwzNewValue) ? dwzNewValue : null;
+            int? performance = int.TryParse(splittedEntries[12], out var performanceValue) ? performanceValue : null;
+
+            return new DewisClubPlayerLeagueDetails
+            {
+                OldDWZ = dwzOld,
+                AverageOpponentDWZ = opponentDwz,
+                NewDWZ = dwzNew,
+                Performance = performance
+            };
+        }
+
         private static bool TournamentNameMatchesExpectedLeague(string tournamentName, League league)
         {
             var region = league.Region;
             var leagueName = league.Name;
-            if (leagueName.Contains("BWL"))
-            {
-                return tournamentName.Contains("BW-Liga");
-            }
-            else if (leagueName.Contains("Oberliga Baden"))
+            if (leagueName.Contains("Oberliga Baden"))
             {
                 return tournamentName.Contains("Oberliga Baden 2025/26");
             }
