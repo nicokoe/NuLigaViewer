@@ -5,7 +5,7 @@ namespace NuLigaViewer.Data
         public Qualification Qualification { get; set; }
         public int Rang { get; set; }
         public string Name { get; set; } = string.Empty;
-        public double DWZ => (TeamPlayers != null && TeamPlayers.Count > 0) ? Math.Round(TeamPlayers.Sum(x => (double)(x.DWZ * x.Games)) / TeamPlayers.Sum(x => x.Games)) : 0;
+        public double DWZ => (TeamPlayers != null && TeamPlayers.Count > 0) ? Math.Round(TeamPlayers.Sum(x => (double)(x.DWZ ?? 0 * x.Games)) / TeamPlayers.Sum(x => x.Games)) : 0;
 
         public required double[] BoardPointsPerRank { get; set; }
         public int Spiele { get; set; }

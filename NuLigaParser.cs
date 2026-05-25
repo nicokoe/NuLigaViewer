@@ -12,7 +12,7 @@ namespace NuLigaViewer
         private static readonly ConcurrentDictionary<string, HtmlNodeCollection?> _cachedTeamPages = new();
         private static readonly ConcurrentDictionary<string, Tuple<string?, Dictionary<int, DewisClubPlayer>?>> _cachedDewisClubPlayers = new();
         private static readonly ConcurrentDictionary<string, List<ClubPlayer>> _cachedClubPlayers = new();
-        private static readonly ConcurrentDictionary<string, Dictionary<int, int>> TeamToClubPlayerNumberToDwzMapping = new();
+        private static readonly ConcurrentDictionary<string, Dictionary<int, DewisClubPlayer>> TeamToClubPlayerNumberToClubPlayerMapping = new();
         private static readonly ConcurrentDictionary<string, Dictionary<int, int>> TeamToClubPlayerNuLigaIdToDwzMapping = new();
 
         private static readonly CultureInfo _nuLigaCulture = new("de-DE");
@@ -43,7 +43,7 @@ namespace NuLigaViewer
                 try
                 {
                     var url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+25%2F26";
-                    regions.Add(new BadenRegion(name: region, leagues: ParseLeaguesFromUrl(web, url)));
+                    regions.Add(new BadenRegion(name: region, leagues: ParseLeaguesFromUrl(web, url, region)));
                 }
                 catch (Exception e)
                 {
@@ -54,7 +54,7 @@ namespace NuLigaViewer
             return regions;
         }
 
-        private static List<League> ParseLeaguesFromUrl(HtmlWeb web, string url)
+        private static List<League> ParseLeaguesFromUrl(HtmlWeb web, string url, string region)
         {
             var doc = web.Load(url);
             var crossTableList = doc.DocumentNode.SelectNodes("//table[@class='matrix']");
@@ -71,6 +71,7 @@ namespace NuLigaViewer
                 var league = new League
                 {
                     Name = rows[row].InnerText.Trim('\n', '\t', ' '),
+                    Region = region,
                     Url = urlRoot + rows[row].Attributes["href"].Value.TrimStart('/').Replace("amp;", ""),
                 };
                 leagues.Add(league);
@@ -121,18 +122,18 @@ namespace NuLigaViewer
                 {
                     var clubUrl = urlRoot + resultSetList[0].SelectNodes("tr")[0].SelectNodes("th|td")[1].QuerySelector("a").Attributes["href"].Value.TrimStart('/').Replace("amp;", "");
                     (_, var dewisClubPlayers) = await LoadClubResources(clubUrl);
-                    if (dewisClubPlayers != null && !TeamToClubPlayerNumberToDwzMapping.ContainsKey(teamName))
+                    if (dewisClubPlayers != null && !TeamToClubPlayerNumberToClubPlayerMapping.ContainsKey(teamName))
                     {
-                        Dictionary<int, int> playerToDwzMapping = new();
+                        Dictionary<int, DewisClubPlayer> playerToDwzMapping = new();
                         foreach (var kv in dewisClubPlayers)
                         {
                             var playerKey = kv.Key;
                             if (kv.Value.DWZ != null)
                             {
-                                playerToDwzMapping[playerKey] = kv.Value.DWZ.Value;
+                                playerToDwzMapping[playerKey] = kv.Value;
                             }
                         }
-                        TeamToClubPlayerNumberToDwzMapping.TryAdd(teamName, playerToDwzMapping);
+                        TeamToClubPlayerNumberToClubPlayerMapping.TryAdd(teamName, playerToDwzMapping);
                     }
                 }
             });
@@ -208,32 +209,39 @@ namespace NuLigaViewer
             newTeam.GameDays = ParseGameDays(resultSetList, newTeam.GameDayReportLoaded, league);
             newTeam.TeamPlayers = ParsePlayers(resultSetList, newTeam, newTeam.GameDays?.Count ?? numberOfTeams - 1);
 
-            if (newTeam.TeamPlayers != null)
+            PopulateClubPlayerNuLigaIdToDwzMapping(newTeam.Name, newTeam.TeamPlayers?.Cast<IPlayer>());
+        }
+
+        private static void PopulateClubPlayerNuLigaIdToDwzMapping(string teamName, IEnumerable<IPlayer>? players)
+        {
+            if (players == null)
             {
-                if (TeamToClubPlayerNuLigaIdToDwzMapping.TryGetValue(newTeam.Name, out var existingMapping))
+                return;
+            }
+
+            if (TeamToClubPlayerNuLigaIdToDwzMapping.TryGetValue(teamName, out var existingMapping))
+            {
+                foreach (var player in players)
                 {
-                    foreach (var Player in newTeam.TeamPlayers)
+                    var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(player.PlayerUrl ?? "");
+                    if (nuligaPersonId.HasValue && player.DWZ.HasValue)
                     {
-                        var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(Player.PlayerUrl ?? "");
-                        if (nuligaPersonId.HasValue)
-                        {
-                            existingMapping[nuligaPersonId.Value] = Player.DWZ;
-                        }
+                        existingMapping[nuligaPersonId.Value] = player.DWZ.Value;
                     }
                 }
-                else
+            }
+            else
+            {
+                Dictionary<int, int> playerNuLigaIdToDwzMapping = new();
+                foreach (var player in players)
                 {
-                    Dictionary<int, int> playerNuLigaIdToDwzMapping = new();
-                    foreach (var Player in newTeam.TeamPlayers)
+                    var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(player.PlayerUrl ?? "");
+                    if (nuligaPersonId.HasValue && player.DWZ.HasValue)
                     {
-                        var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(Player.PlayerUrl ?? "");
-                        if (nuligaPersonId.HasValue)
-                        {
-                            playerNuLigaIdToDwzMapping[nuligaPersonId.Value] = Player.DWZ;
-                        }
+                        playerNuLigaIdToDwzMapping[nuligaPersonId.Value] = player.DWZ.Value;
                     }
-                    TeamToClubPlayerNuLigaIdToDwzMapping.TryAdd(newTeam.Name, playerNuLigaIdToDwzMapping);
                 }
+                TeamToClubPlayerNuLigaIdToDwzMapping.TryAdd(teamName, playerNuLigaIdToDwzMapping);
             }
         }
 
@@ -417,6 +425,7 @@ namespace NuLigaViewer
                 if (player.MemberNumber.HasValue && newTeam.ClubPlayers?.TryGetValue(player.MemberNumber.Value, out DewisClubPlayer? dewisPlayer) == true)
                 {
                     player.DWZ = dewisPlayer?.DWZ ?? 1000;
+                    player.DewisPkz = dewisPlayer?.Pkz;
                 }
                 players.Add(player);
             }
@@ -524,14 +533,17 @@ namespace NuLigaViewer
                         MemberNumber = int.TryParse(cells[3].InnerText, out var memberNumber) ? memberNumber : null,
                         Number = number,
                         Status = cells[5].InnerText.Trim('\n', '\t', ' '),
-                        Url = string.IsNullOrEmpty(playerUrl) ? null : playerUrl
+                        PlayerUrl = string.IsNullOrEmpty(playerUrl) ? null : playerUrl
                     };
-                    if (player.MemberNumber.HasValue && TeamToClubPlayerNumberToDwzMapping.GetValueOrDefault(teamName)?.TryGetValue(player.MemberNumber.Value, out var dewisDWZ) == true)
+                    if (player.MemberNumber.HasValue && TeamToClubPlayerNumberToClubPlayerMapping.GetValueOrDefault(teamName)?.TryGetValue(player.MemberNumber.Value, out var dewisClubPlayer) == true)
                     {
-                        player.DWZ = dewisDWZ;
+                        player.DWZ = dewisClubPlayer.DWZ;
+                        player.DewisPkz = dewisClubPlayer.Pkz;
                     }
                     clubPlayers.Add(player);
                 }
+
+                PopulateClubPlayerNuLigaIdToDwzMapping(teamName, clubPlayers.Cast<IPlayer>());
 
                 _cachedClubPlayers.TryAdd(clubLineUpsUrl, clubPlayers);
                 return clubPlayers;
@@ -598,7 +610,7 @@ namespace NuLigaViewer
                     {
                         Brett = int.Parse(cells[1].InnerText.Trim('\n', '\t', ' ')),
                         HeimSpieler = name,
-                        HeimSpielerDWZ = playerDetails.DWZ,
+                        HeimSpielerDWZ = playerDetails.DWZ ?? 1000,
                         GastSpieler = opponentName,
                         GastSpielerDWZ = int.TryParse(guestPlayerDWZ, out var parsedGuestDWZ) ? parsedGuestDWZ : 1000,
                         OpponentUrl = string.IsNullOrEmpty(opponentUrl) ? null : opponentUrl,

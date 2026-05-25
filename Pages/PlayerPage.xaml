@@ -25,7 +25,7 @@
 
             <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
                 <Label Text="Alte DWZ" FontSize="12" HorizontalTextAlignment="Center" Opacity="0.8" />
-                <Label Text="{Binding DWZ}" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding VisibleOldDWZ}" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">

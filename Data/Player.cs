@@ -1,12 +1,19 @@
 namespace NuLigaViewer.Data
 {
-    public class Player
+    public interface IPlayer
     {
+        string? PlayerUrl { get; }
+        int? DWZ { get; }
+    }
+
+    public class Player : IPlayer
+    {
+        public int? DewisPkz { get; set; }
         public int Brett { get; set; }
         public string? Name { get; set; }
         public string? PlayerUrl { get; set; }
         public int? MemberNumber { get; set; }
-        public int DWZ { get; set; }
+        public int? DWZ { get; set; }
 
         public int Games { get; set; }
         public string? BoardPoints { get; set; }

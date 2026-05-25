@@ -10,7 +10,7 @@ namespace NuLigaViewer.Pages
             InitializeComponent();
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("playerName", out var nameObj) && nameObj is string playerName)
             {
@@ -30,6 +30,11 @@ namespace NuLigaViewer.Pages
                         System.Diagnostics.Debug.WriteLine(e.ToString());
                     }
                 }
+                if (player != null && query.TryGetValue("pkzNumber", out var pkzNumberObj) && pkzNumberObj is string pkzNumber && !string.IsNullOrEmpty(pkzNumber))
+                {
+                    player.DewisPkz = int.Parse(pkzNumber);
+                }
+                var leaguePerformance = await DewisAccess.GetClubPlayerLeaguePerformance(player?.DewisPkz?.ToString(), NavigationState.SelectedLeagueViewModel.League);
 
                 BindingContext = player != null ? new PlayerRow
                 {
@@ -37,7 +42,8 @@ namespace NuLigaViewer.Pages
                     Spieler = player.Name ?? string.Empty,
                     DWZ = player.DWZ == 1000 ? null : player.DWZ,
                     Rounds = [],
-                    PlayerGameDayInfos = player.PlayerInfoPerGameDay?.Where(x => x != null).ToList() ?? []
+                    PlayerGameDayInfos = player.PlayerInfoPerGameDay?.Where(x => x != null).ToList() ?? [],
+                    LeaguePerformance = leaguePerformance
                 } : null;
             }
         }
@@ -61,7 +67,6 @@ namespace NuLigaViewer.Pages
             {
                 route += $"&url={Uri.EscapeDataString(playerInfo.Pairing.OpponentUrl)}";
             }
-
             await Shell.Current.GoToAsync(route);
         }
     }

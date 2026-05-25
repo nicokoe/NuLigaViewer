@@ -30,8 +30,9 @@ namespace NuLigaViewer.Pages
             }
 
             var playerName = Uri.EscapeDataString(clubPlayer.Name ?? string.Empty);
-            var url = Uri.EscapeDataString(clubPlayer.Url ?? string.Empty);
-            await Shell.Current.GoToAsync($"playerdetails?playerName={playerName}&url={url}");
+            var url = Uri.EscapeDataString(clubPlayer.PlayerUrl ?? string.Empty);
+            var pkz = Uri.EscapeDataString(clubPlayer.DewisPkz?.ToString() ?? string.Empty);
+            await Shell.Current.GoToAsync($"playerdetails?playerName={playerName}&url={url}&pkzNumber={pkz}");
         }
     }
 }
