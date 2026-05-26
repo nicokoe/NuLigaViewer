@@ -259,11 +259,20 @@ namespace NuLigaViewer
                 {
                     return new Tuple<string?, Dictionary<int, DewisClubPlayer>?>(null, null);
                 }
-
-                var clubPageLinks = clubTables[0].SelectNodes("tr")[0].SelectNodes("th|td")[0].SelectNodes("ul")[0].SelectNodes("li");
+                var clubInfoBody = clubTables[0].SelectNodes("tr");
+                if (clubInfoBody == null || clubInfoBody.Count < 1)
+                {
+                    return new Tuple<string?, Dictionary<int, DewisClubPlayer>?>(null, null);
+                }
+                var clubInfoTableRows = clubInfoBody[0].SelectNodes("th|td");
+                if (clubInfoTableRows == null || clubInfoTableRows.Count < 1)
+                {
+                    return new Tuple<string?, Dictionary<int, DewisClubPlayer>?>(null, null);
+                }
+                var clubPageLinks = clubInfoTableRows[0].SelectNodes("ul")[0].SelectNodes("li");
                 var clubLineUpsUrl = urlRoot + clubPageLinks[2].QuerySelector("a").Attributes["href"].Value.TrimStart('/').Replace("amp;", "");
 
-                var pLine = clubTables[0].SelectNodes("tr")[0].SelectNodes("th|td")[0].SelectNodes("p")[0].InnerText;
+                var pLine = clubInfoTableRows[0].SelectNodes("p")[0].InnerText;
                 var pLineTrimmed = pLine.Replace("&nbsp;", "").Trim().Trim('\r', '\n').Trim();
                 var vnrNumber = pLineTrimmed.Split(',')[0];
                 var zpsNumber = vnrNumber.Substring(vnrNumber.IndexOf(':') + 1) ?? "";
