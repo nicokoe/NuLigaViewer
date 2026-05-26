@@ -112,7 +112,7 @@ public class Shortener
         if ("23456".Contains(c))
         {
             NameFlags |= Flags.ClubNamePrefix | Flags.ClubNameBad | Flags.AbbrevWithPoint;
-            var dd = "3:10 4:8 5:6 6:4".ToDictionary(" ", ":");
+            var dd = "3:8 4:4".ToDictionary(" ", ":");
             if (dd.TryGetValue(c, out string? n))
                 ClubNameNumChars = Convert.ToInt16(n);
             else

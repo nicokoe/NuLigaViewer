@@ -33,10 +33,8 @@
             <Picker.Items>
                 <x:String>1 - Keine Abkürzung</x:String>
                 <x:String>2 - Hintertupfingen 2</x:String>
-                <x:String>3 - Hintertup. 2</x:String>
-                <x:String>4 - Hintert. 2</x:String>
-                <x:String>5 - Hinte. 2</x:String>
-                <x:String>6 - Hin. 2</x:String>
+                <x:String>3 - Hintert. 2</x:String>
+                <x:String>4 - Hin. 2</x:String>
             </Picker.Items>
         </Picker>
     </Grid>
