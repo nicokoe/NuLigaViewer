@@ -67,7 +67,7 @@ public class InternetFileCache
         string path = GetPathForUrl(url);
         SemaphoreSlim sem = GetLock(path);
 
-        await sem.WaitAsync();
+        await sem.WaitAsync().ConfigureAwait(false);
         try
         {
             if (File.Exists(path))
@@ -77,13 +77,13 @@ public class InternetFileCache
                 // 1. Frisch genug => direkt zurückgeben
                 if (age < _maxAge1)
                 {
-                    return await File.ReadAllTextAsync(path);
+                    return await File.ReadAllTextAsync(path).ConfigureAwait(false);
                 }
 
                 // 2. Mittelalt => zurückgeben + Hintergrund-Refresh
                 if (age < _maxAge2)
                 {
-                    string content = await File.ReadAllTextAsync(path);
+                    string content = await File.ReadAllTextAsync(path).ConfigureAwait(false);
 
                     // Hintergrund-Refresh
                     _ = Task.Run(async () =>
@@ -91,8 +91,8 @@ public class InternetFileCache
                         try
                         {
                             using var client = new HttpClient();
-                            string fresh = await client.GetStringAsync(url);
-                            await File.WriteAllTextAsync(path, fresh);
+                            string fresh = await client.GetStringAsync(url).ConfigureAwait(false);
+                            await File.WriteAllTextAsync(path, fresh).ConfigureAwait(false);
                         }
                         catch
                         {
@@ -108,8 +108,8 @@ public class InternetFileCache
 
             // Datei existiert nicht oder ist zu alt => neu laden
             using var httpClient = new HttpClient();
-            string downloaded = await httpClient.GetStringAsync(url);
-            await File.WriteAllTextAsync(path, downloaded);
+            string downloaded = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+            await File.WriteAllTextAsync(path, downloaded).ConfigureAwait(false);
             return downloaded;
         }
         finally
