@@ -19,20 +19,20 @@
 
         <Grid Grid.Row="0" ColumnSpacing="1" Padding="6" VerticalOptions="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Label Grid.Column="0" Text="Brett" FontAttributes="Bold" VerticalTextAlignment="Center" />
-            <Label Grid.Column="1" Text="Spieler" FontAttributes="Bold" VerticalTextAlignment="Center" />
+            <Label Grid.Column="1" Text="Spieler" MinimumWidthRequest="50" FontAttributes="Bold" VerticalTextAlignment="Center" />
             <Label Grid.Column="2" Text="DWZ" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 
             <HorizontalStackLayout Grid.Column="3" BindableLayout.ItemsSource="{Binding RoundHeaders}" Spacing="3" VerticalOptions="Center">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Label Text="{Binding .}" FontAttributes="Bold" HorizontalTextAlignment="Center" WidthRequest="18" />
+                        <Label Text="{Binding .}" FontAttributes="Bold" HorizontalTextAlignment="Center" WidthRequest="16" />
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </HorizontalStackLayout>
@@ -50,20 +50,20 @@
                         </Border.StrokeShape>
                         <Grid ColumnSpacing="1" VerticalOptions="Center">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Column="0" Text="{Binding Brett}" VerticalTextAlignment="Center" />
-                            <Label Grid.Column="1" Text="{Binding Spieler}" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="1" Text="{Binding Spieler}" MinimumWidthRequest="50" VerticalTextAlignment="Center" />
                             <Label Grid.Column="2" Text="{Binding DWZ}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 
                             <HorizontalStackLayout Grid.Column="3" BindableLayout.ItemsSource="{Binding Rounds}" Spacing="3" VerticalOptions="Center">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Text="{Binding .}" FontSize="12" WidthRequest="18" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding .}" FontSize="12" WidthRequest="16" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </HorizontalStackLayout>
