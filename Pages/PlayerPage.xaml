@@ -56,10 +56,10 @@
 
             <Label Grid.Column="0" Text="Datum" FontAttributes="Bold" VerticalTextAlignment="Center" />
             <Label Grid.Column="1" Text="Brett" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-            <Label Grid.Column="2" Text="Gegner" FontAttributes="Bold" VerticalTextAlignment="Center" />
+            <Label Grid.Column="2" Text="Gegner" MinimumWidthRequest="50" FontAttributes="Bold" VerticalTextAlignment="Center" />
             <Label Grid.Column="3" Text="DWZ" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
             <Label Grid.Column="4" Text="Ergebnis" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-            <Label Grid.Column="5" Text="Verein" FontAttributes="Bold" VerticalTextAlignment="Center" />
+            <Label Grid.Column="5" Text="Verein"  MinimumWidthRequest="50" FontAttributes="Bold" VerticalTextAlignment="Center" />
         </Grid>
 
         <CollectionView Grid.Row="2"
@@ -88,10 +88,10 @@
 
                             <Label Grid.Column="0" Grid.Row="0" Text="{Binding Pairing.RelatedTeamPairing.Datum, StringFormat='{0:dd.MM.yy}'}" VerticalTextAlignment="Center" />
                             <Label Grid.Column="1" Grid.Row="0" Text="{Binding Pairing.Brett}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            <Label Grid.Column="2" Grid.Row="0" Text="{Binding Opponent}" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="2" Grid.Row="0" Text="{Binding Opponent}"  MinimumWidthRequest="50" VerticalTextAlignment="Center" />
                             <Label Grid.Column="3" Grid.Row="0" Text="{Binding OpponentDWZString}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             <Label Grid.Column="4" Grid.Row="0" Text="{Binding ResultForPlayer}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            <Label Grid.Column="5" Grid.Row="0" Text="{Binding OpponentTeam}" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="5" Grid.Row="0" Text="{Binding OpponentTeam}"  MinimumWidthRequest="50" VerticalTextAlignment="Center" />
 
                             <Label Grid.Column="0" Grid.Row="1" IsVisible="{Binding SecExists}" Text="{Binding SecondPairing.RelatedTeamPairing.Datum, StringFormat='{0:dd.MM.yy}'}" VerticalTextAlignment="Center" />
                             <Label Grid.Column="1" Grid.Row="1" IsVisible="{Binding SecExists}" Text="{Binding SecondPairing.Brett}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />

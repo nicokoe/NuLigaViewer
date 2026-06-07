@@ -33,9 +33,9 @@
             </Grid.ColumnDefinitions>
 
 			<Label Grid.Column="0" Text="Rang" FontAttributes="Bold" VerticalTextAlignment="Center" />
-			<Label Grid.Column="1" Text="Spieler" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            <Label Grid.Column="1" Text="Spieler" MinimumWidthRequest="50" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 			<Label Grid.Column="2" Text="DWZ" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-			<Label Grid.Column="3" Text="Verein" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            <Label Grid.Column="3" Text="Verein" MinimumWidthRequest="50" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 			<Label Grid.Column="4" Text="Punkte" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 			<Label Grid.Column="5" Text="Spiele" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 		</Grid>
@@ -62,9 +62,9 @@
                             </Grid.ColumnDefinitions>
 
 							<Label Grid.Column="0" Text="{Binding Rang}" VerticalTextAlignment="Center" />
-							<Label Grid.Column="1" Text="{Binding Name}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="1" Text="{Binding Name}" MinimumWidthRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             <Label Grid.Column="2" Text="{Binding DWZ}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-							<Label Grid.Column="3" Text="{Binding Verein}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="3" Text="{Binding Verein}" MinimumWidthRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 							<Label Grid.Column="4" Text="{Binding Punkte}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 							<Label Grid.Column="5" Text="{Binding Spiele}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                         </Grid>

@@ -27,17 +27,17 @@
 		
         <Grid Grid.Row="1" ColumnSpacing="1" Padding="6" BackgroundColor="{DynamicResource PageBackgroundColor}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="30" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="37" />
+                <ColumnDefinition Width="37" />
+                <ColumnDefinition Width="41" />
+                <ColumnDefinition Width="35" />
+                <ColumnDefinition Width="35" />
             </Grid.ColumnDefinitions>
 
             <Label Grid.Column="0" Text="Rang" FontAttributes="Bold" VerticalTextAlignment="Center" />
-            <Label Grid.Column="1" Text="Name" FontAttributes="Bold" VerticalTextAlignment="Center" />
+            <Label Grid.Column="1" Text="Name" MinimumWidthRequest="50" FontAttributes="Bold" VerticalTextAlignment="Center" />
             <Label Grid.Column="2" Text="DWZ" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
             <Label Grid.Column="3" Text="Spiele" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
             <Label Grid.Column="4" Text="Punkte" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
@@ -57,17 +57,17 @@
                         </Border.StrokeShape>
                         <Grid ColumnSpacing="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="30" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="37" />
+                                <ColumnDefinition Width="37" />
+                                <ColumnDefinition Width="41" />
+                                <ColumnDefinition Width="35" />
+                                <ColumnDefinition Width="35" />
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Column="0" Text="{Binding Rank}" VerticalTextAlignment="Center" TextColor="{Binding RowColor}" />
-                            <Label Grid.Column="1" Text="{Binding Name}" VerticalTextAlignment="Center" TextColor="{Binding RowColor}" />
+                            <Label Grid.Column="1" Text="{Binding Name}" MinimumWidthRequest="50" VerticalTextAlignment="Center" TextColor="{Binding RowColor}" />
                             <Label Grid.Column="2" Text="{Binding AverageDwz}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" TextColor="{Binding RowColor}" />
                             <Label Grid.Column="3" Text="{Binding Games}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" TextColor="{Binding RowColor}" />
                             <Label Grid.Column="4" Text="{Binding Points}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" TextColor="{Binding RowColor}" />
