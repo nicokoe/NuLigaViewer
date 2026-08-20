@@ -5,7 +5,7 @@
              Title="Schachliga Baden">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding SettingsCommand}" IconImageSource="settings.png"/>
+        <ToolbarItem Command="{Binding SettingsCommand}" IconImageSource="{AppThemeBinding Light=settings_dark.png, Dark=settings_light.png}"/>
     </ContentPage.ToolbarItems>
 
     <Grid Padding="4">
