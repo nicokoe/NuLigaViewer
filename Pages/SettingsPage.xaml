@@ -11,10 +11,15 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="0" Grid.Column="0">Schriftbreite</Label>
         <Picker Grid.Row="0" Grid.Column="1" Title=""
                 ItemsSource="{Binding FontWidths}"
                 SelectedItem="{Binding FontWidth}" />
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="1" Grid.Column="0">Jahr</Label>
+        <Picker Grid.Row="1" Grid.Column="1" Title=""
+                ItemsSource="{Binding Years}"
+                SelectedItem="{Binding Year}" />
     </Grid>
 </ContentPage>

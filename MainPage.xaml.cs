@@ -8,8 +8,11 @@ namespace NuLigaViewer
         {
             InitializeComponent();
 
-            var leagues = NuLigaParser.ParseLeagues();
-            BindingContext = new ViewModels.LeaguesViewModel(leagues);
+            var year = Preferences.Default.Get("year", "2026/27");
+            var regions = NuLigaParser.ParseLeagues(year, Category.Open);
+
+            NavigationState.SelectedRegionsViewModel.LoadRegions(year, regions);
+            BindingContext = NavigationState.SelectedRegionsViewModel;
         }
 
         public async void OnLeagueSelected(object sender, SelectionChangedEventArgs e)

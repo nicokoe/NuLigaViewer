@@ -21,7 +21,7 @@ namespace NuLigaViewer
 
         public static event Action<League, TeamPairing>? TeamPairingReportLoadedForGui;
 
-        public static List<BadenRegion> ParseLeagues()
+        public static List<BadenRegion> ParseLeagues(string year, Category category)
         {
             var regions = new List<BadenRegion>();
             var badenLeagues = new List<string>
@@ -40,12 +40,17 @@ namespace NuLigaViewer
                 "Bodensee",
             };
 
+            var urlYear = YearConvertions.ConvertYearToUrlFormat(year);
             foreach (var region in badenLeagues)
             {
                 try
                 {
-                    var url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+25%2F26";
-                    regions.Add(new BadenRegion(name: region, leagues: ParseLeaguesFromUrl(web, url, region)));
+                    var url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+{urlYear}";
+                    if (category != Category.Open)
+                    {
+                        url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+{category}+{urlYear}";
+                    }
+                    regions.Add(new BadenRegion(name: region, leagues: ParseLeaguesFromUrl(web, url, year, region, category)));
                 }
                 catch (Exception e)
                 {
@@ -56,7 +61,7 @@ namespace NuLigaViewer
             return regions;
         }
 
-        private static List<League> ParseLeaguesFromUrl(HtmlWeb web, string url, string region)
+        private static List<League> ParseLeaguesFromUrl(HtmlWeb web, string url, string year, string region, Category category)
         {
             var doc = web.Load(url);
             var crossTableList = doc.DocumentNode.SelectNodes("//table[@class='matrix']");
@@ -66,14 +71,21 @@ namespace NuLigaViewer
             }
 
             var leagueList = crossTableList[0];
-            var leagues = new List<League>();
             var rows = leagueList.SelectNodes(".//a[starts-with(@href, '/cgi')]");
+            if (rows == null)
+            {
+                return [];
+            }
+
+            var leagues = new List<League>();
             for (var row = 0; row < rows.Count; row++)
             {
                 var league = new League
                 {
                     Name = rows[row].InnerText.Trim('\n', '\t', ' '),
+                    Year = year,
                     Region = region,
+                    Category = category,
                     Url = urlRoot + rows[row].Attributes["href"].Value.TrimStart('/').Replace("amp;", ""),
                 };
                 leagues.Add(league);
@@ -488,15 +500,17 @@ namespace NuLigaViewer
                 return [];
             }
 
-            if (_cachedClubPlayers.TryGetValue(clubLineUpsUrl, out var cachedClubsPlayers))
+            var year = NavigationState.SelectedLeagueViewModel.League?.Year ?? string.Empty;
+            var category = NavigationState.SelectedLeagueViewModel.League?.Category ?? Category.Open;
+            if (_cachedClubPlayers.TryGetValue($"{clubLineUpsUrl}_{year}_{category}", out var cachedClubsPlayers))
             {
                 return cachedClubsPlayers;
             }
 
-            return LoadClubLineUpResource(clubLineUpsUrl, teamName);
+            return LoadClubLineUpResource(year, category, clubLineUpsUrl, teamName);
         }
 
-        private static List<ClubPlayer> LoadClubLineUpResource(string clubLineUpsUrl, string teamName)
+        private static List<ClubPlayer> LoadClubLineUpResource(string year, Category category, string clubLineUpsUrl, string teamName)
         {
             try
             {
@@ -513,7 +527,7 @@ namespace NuLigaViewer
                     var cells = lineUps[lineUpIndex].SelectNodes("th|td");
 
                     var lineUpFound = cells.Any(x => x.InnerHtml.Contains("Punktspielbetrieb")
-                                            && x.InnerHtml.Contains("2025/26")
+                                            && x.InnerHtml.Contains(year)
                                             && !x.InnerHtml.Contains("Senioren")
                                             && !x.InnerHtml.Contains("Jugend")
                                             && !x.InnerHtml.Contains("Pokal"));
@@ -565,7 +579,7 @@ namespace NuLigaViewer
                 // Dewis data is not available anymore:
                 //PopulateClubPlayerNuLigaIdToDwzMapping(teamName, clubPlayers.Cast<IPlayer>());
 
-                _cachedClubPlayers.TryAdd(clubLineUpsUrl, clubPlayers);
+                _cachedClubPlayers.TryAdd($"{clubLineUpsUrl}_{year}_{category}", clubPlayers);
                 return clubPlayers;
             }
             catch (Exception ex)

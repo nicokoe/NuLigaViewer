@@ -1,3 +1,4 @@
+using NuLigaViewer.Data;
 using System.ComponentModel;
 
 namespace NuLigaViewer.ViewModels
@@ -21,6 +22,7 @@ namespace NuLigaViewer.ViewModels
         }
 
         public IEnumerable<string> FontWidths => FontMapping.Values.ToList();
+        public IEnumerable<string> Years => new List<string> { "2025/26", "2026/27" };
 
         public string FontWidth
         {
@@ -49,6 +51,32 @@ namespace NuLigaViewer.ViewModels
                 }
 
                 OnPropertyChanged(nameof(FontWidth));
+            }
+        }
+
+        public string Year
+        {
+            get => _settings.Year;
+            set
+            {
+                if (_settings.Year == value)
+                {
+                    return;
+                }
+                _settings.Year = value;
+
+                try
+                {
+                    Preferences.Default.Set("year", value);
+                    var regions = NuLigaParser.ParseLeagues(value, Category.Open);
+                    NavigationState.SelectedRegionsViewModel.LoadRegions(value, regions);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                }
+
+                OnPropertyChanged(nameof(Year));
             }
         }
 

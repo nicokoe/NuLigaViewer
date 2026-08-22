@@ -9,7 +9,6 @@
     FlyoutBehavior="Disabled">
 
     <ShellContent
-            Title="Verbandsrunde 2025/26"
             ContentTemplate="{DataTemplate local:MainPage}"
             Route="home">
     </ShellContent>
