@@ -12,8 +12,10 @@ namespace NuLigaViewer
         private static readonly ConcurrentDictionary<string, HtmlNodeCollection?> _cachedTeamPages = new();
         private static readonly ConcurrentDictionary<string, Tuple<string?, Dictionary<int, DewisClubPlayer>?>> _cachedDewisClubPlayers = new();
         private static readonly ConcurrentDictionary<string, List<ClubPlayer>> _cachedClubPlayers = new();
-        private static readonly ConcurrentDictionary<string, Dictionary<int, DewisClubPlayer>> TeamToClubPlayerNumberToClubPlayerMapping = new();
-        private static readonly ConcurrentDictionary<string, Dictionary<int, int>> TeamToClubPlayerNuLigaIdToDwzMapping = new();
+
+        // Dewis data is not available anymore:
+        //private static readonly ConcurrentDictionary<string, Dictionary<int, DewisClubPlayer>> TeamToClubPlayerNumberToClubPlayerMapping = new();
+        //private static readonly ConcurrentDictionary<string, Dictionary<int, int>> TeamToClubPlayerNuLigaIdToDwzMapping = new();
 
         private static readonly CultureInfo _nuLigaCulture = new("de-DE");
 
@@ -80,14 +82,15 @@ namespace NuLigaViewer
             return leagues;
         }
 
-        private static int? ExtractNuLigaPersonIdFromUrl(string url)
-        {
-            try
-            {
-                return int.Parse(url.Split('&').First(x => x.StartsWith("person=")).Split('=')[1]);
-            }
-            catch { return null; }
-        }
+        // Dewis data is not available anymore:
+        //private static int? ExtractNuLigaPersonIdFromUrl(string url)
+        //{
+        //    try
+        //    {
+        //        return int.Parse(url.Split('&').First(x => x.StartsWith("person=")).Split('=')[1]);
+        //    }
+        //    catch { return null; }
+        //}
 
         public static async Task<Team[]> ParseTeams(League league)
         {
@@ -118,24 +121,25 @@ namespace NuLigaViewer
                     resultSetList = TryLoadWebResourceThreeTimes(web, teamUrl, "//table[@class='result-set']");
                     _cachedTeamPages.TryAdd(teamUrl, resultSetList);
                 }
-                if (resultSetList != null && resultSetList.Count >= 1)
-                {
-                    var clubUrl = urlRoot + resultSetList[0].SelectNodes("tr")[0].SelectNodes("th|td")[1].QuerySelector("a").Attributes["href"].Value.TrimStart('/').Replace("amp;", "");
-                    (_, var dewisClubPlayers) = await LoadClubResources(clubUrl);
-                    if (dewisClubPlayers != null && !TeamToClubPlayerNumberToClubPlayerMapping.ContainsKey(teamName))
-                    {
-                        Dictionary<int, DewisClubPlayer> playerToDwzMapping = new();
-                        foreach (var kv in dewisClubPlayers)
-                        {
-                            var playerKey = kv.Key;
-                            if (kv.Value.DWZ != null)
-                            {
-                                playerToDwzMapping[playerKey] = kv.Value;
-                            }
-                        }
-                        TeamToClubPlayerNumberToClubPlayerMapping.TryAdd(teamName, playerToDwzMapping);
-                    }
-                }
+                // Dewis data is not available anymore:
+                //if (resultSetList != null && resultSetList.Count >= 1)
+                //{
+                //    var clubUrl = urlRoot + resultSetList[0].SelectNodes("tr")[0].SelectNodes("th|td")[1].QuerySelector("a").Attributes["href"].Value.TrimStart('/').Replace("amp;", "");
+                //    (_, var dewisClubPlayers) = await LoadClubResources(clubUrl);
+                //    if (dewisClubPlayers != null && !TeamToClubPlayerNumberToClubPlayerMapping.ContainsKey(teamName))
+                //    {
+                //        Dictionary<int, DewisClubPlayer> playerToDwzMapping = new();
+                //        foreach (var kv in dewisClubPlayers)
+                //        {
+                //            var playerKey = kv.Key;
+                //            if (kv.Value.DWZ != null)
+                //            {
+                //                playerToDwzMapping[playerKey] = kv.Value;
+                //            }
+                //        }
+                //        TeamToClubPlayerNumberToClubPlayerMapping.TryAdd(teamName, playerToDwzMapping);
+                //    }
+                //}
             });
 
             var numberOfTeams = rows.Count - 1; // BW Liga has 12 teams, others 10, KKC has 8 (+ header)
@@ -201,49 +205,52 @@ namespace NuLigaViewer
             {
                 var clubUrl = urlRoot + resultSetList[0].SelectNodes("tr")[0].SelectNodes("th|td")[1].QuerySelector("a").Attributes["href"].Value.TrimStart('/').Replace("amp;", "");
 
-                (string? clubLineUpsUrl, var dewisClubPlayers) = await LoadClubResources(clubUrl);
+                (string? clubLineUpsUrl, _) = await LoadClubResources(clubUrl);
                 newTeam.ClubLineUpsUrl = clubLineUpsUrl;
-                newTeam.ClubPlayers = dewisClubPlayers;
+                // Dewis data is not available anymore:
+                //newTeam.ClubPlayers = dewisClubPlayers;
             }
 
             newTeam.GameDays = ParseGameDays(resultSetList, newTeam.GameDayReportLoaded, league);
             newTeam.TeamPlayers = ParsePlayers(resultSetList, newTeam, newTeam.GameDays?.Count ?? numberOfTeams - 1);
 
-            PopulateClubPlayerNuLigaIdToDwzMapping(newTeam.Name, newTeam.TeamPlayers?.Cast<IPlayer>());
+            // Dewis data is not available anymore:
+            //PopulateClubPlayerNuLigaIdToDwzMapping(newTeam.Name, newTeam.TeamPlayers?.Cast<IPlayer>());
         }
 
-        private static void PopulateClubPlayerNuLigaIdToDwzMapping(string teamName, IEnumerable<IPlayer>? players)
-        {
-            if (players == null)
-            {
-                return;
-            }
+        // Dewis data is not available anymore:
+        //private static void PopulateClubPlayerNuLigaIdToDwzMapping(string teamName, IEnumerable<IPlayer>? players)
+        //{
+        //    if (players == null)
+        //    {
+        //        return;
+        //    }
 
-            if (TeamToClubPlayerNuLigaIdToDwzMapping.TryGetValue(teamName, out var existingMapping))
-            {
-                foreach (var player in players)
-                {
-                    var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(player.PlayerUrl ?? "");
-                    if (nuligaPersonId.HasValue && player.DWZ.HasValue)
-                    {
-                        existingMapping[nuligaPersonId.Value] = player.DWZ.Value;
-                    }
-                }
-            }
-            else
-            {
-                Dictionary<int, int> playerNuLigaIdToDwzMapping = new();
-                foreach (var player in players)
-                {
-                    var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(player.PlayerUrl ?? "");
-                    if (nuligaPersonId.HasValue && player.DWZ.HasValue)
-                    {
-                        playerNuLigaIdToDwzMapping[nuligaPersonId.Value] = player.DWZ.Value;
-                    }
-                }
-                TeamToClubPlayerNuLigaIdToDwzMapping.TryAdd(teamName, playerNuLigaIdToDwzMapping);
-            }
-        }
+        //    if (TeamToClubPlayerNuLigaIdToDwzMapping.TryGetValue(teamName, out var existingMapping))
+        //    {
+        //        foreach (var player in players)
+        //        {
+        //            var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(player.PlayerUrl ?? "");
+        //            if (nuligaPersonId.HasValue && player.DWZ.HasValue)
+        //            {
+        //                existingMapping[nuligaPersonId.Value] = player.DWZ.Value;
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Dictionary<int, int> playerNuLigaIdToDwzMapping = new();
+        //        foreach (var player in players)
+        //        {
+        //            var nuligaPersonId = ExtractNuLigaPersonIdFromUrl(player.PlayerUrl ?? "");
+        //            if (nuligaPersonId.HasValue && player.DWZ.HasValue)
+        //            {
+        //                playerNuLigaIdToDwzMapping[nuligaPersonId.Value] = player.DWZ.Value;
+        //            }
+        //        }
+        //        TeamToClubPlayerNuLigaIdToDwzMapping.TryAdd(teamName, playerNuLigaIdToDwzMapping);
+        //    }
+        //}
 
         private async static Task<Tuple<string?, Dictionary<int, DewisClubPlayer>?>> LoadClubResources(string clubUrl)
         {
@@ -277,8 +284,9 @@ namespace NuLigaViewer
                 var vnrNumber = pLineTrimmed.Split(',')[0];
                 var zpsNumber = vnrNumber.Substring(vnrNumber.IndexOf(':') + 1) ?? "";
 
-                var clubPlayers = await DewisAccess.GetClubPlayers(zpsNumber);
-                var clubResource = new Tuple<string?, Dictionary<int, DewisClubPlayer>?>(clubLineUpsUrl, clubPlayers);
+                // Dewis data is not available anymore:
+                //var clubPlayers = await DewisAccess.GetClubPlayers(zpsNumber);
+                var clubResource = new Tuple<string?, Dictionary<int, DewisClubPlayer>?>(clubLineUpsUrl, null);
                 _cachedDewisClubPlayers.TryAdd(clubUrl, clubResource);
 
                 return clubResource;
@@ -431,11 +439,12 @@ namespace NuLigaViewer
                     PlayerInfoPerGameDay = new PlayerGameDayInfo[numberOfGameDays]
                 };
 
-                if (player.MemberNumber.HasValue && newTeam.ClubPlayers?.TryGetValue(player.MemberNumber.Value, out DewisClubPlayer? dewisPlayer) == true)
-                {
-                    player.DWZ = dewisPlayer?.DWZ ?? 1000;
-                    player.DewisPkz = dewisPlayer?.Pkz;
-                }
+                // Dewis data is not available anymore:
+                //if (player.MemberNumber.HasValue && newTeam.ClubPlayers?.TryGetValue(player.MemberNumber.Value, out DewisClubPlayer? dewisPlayer) == true)
+                //{
+                //    player.DWZ = dewisPlayer?.DWZ ?? 1000;
+                //    player.DewisPkz = dewisPlayer?.Pkz;
+                //}
                 players.Add(player);
             }
 
@@ -544,15 +553,17 @@ namespace NuLigaViewer
                         Status = cells[5].InnerText.Trim('\n', '\t', ' '),
                         PlayerUrl = string.IsNullOrEmpty(playerUrl) ? null : playerUrl
                     };
-                    if (player.MemberNumber.HasValue && TeamToClubPlayerNumberToClubPlayerMapping.GetValueOrDefault(teamName)?.TryGetValue(player.MemberNumber.Value, out var dewisClubPlayer) == true)
-                    {
-                        player.DWZ = dewisClubPlayer.DWZ;
-                        player.DewisPkz = dewisClubPlayer.Pkz;
-                    }
+                    // Dewis data is not available anymore:
+                    //if (player.MemberNumber.HasValue && TeamToClubPlayerNumberToClubPlayerMapping.GetValueOrDefault(teamName)?.TryGetValue(player.MemberNumber.Value, out var dewisClubPlayer) == true)
+                    //{
+                    //    player.DWZ = dewisClubPlayer.DWZ;
+                    //    player.DewisPkz = dewisClubPlayer.Pkz;
+                    //}
                     clubPlayers.Add(player);
                 }
 
-                PopulateClubPlayerNuLigaIdToDwzMapping(teamName, clubPlayers.Cast<IPlayer>());
+                // Dewis data is not available anymore:
+                //PopulateClubPlayerNuLigaIdToDwzMapping(teamName, clubPlayers.Cast<IPlayer>());
 
                 _cachedClubPlayers.TryAdd(clubLineUpsUrl, clubPlayers);
                 return clubPlayers;
@@ -582,11 +593,12 @@ namespace NuLigaViewer
                 DWZ = int.TryParse(dwzString, out var parsedDWZ) ? parsedDWZ : 1000,
             };
 
-            if (TeamToClubPlayerNuLigaIdToDwzMapping.GetValueOrDefault(teamName ?? "")?
-                .TryGetValue(ExtractNuLigaPersonIdFromUrl(playerUrl) ?? 0, out var dewisDWZ) == true)
-            {
-                playerDetails.DWZ = dewisDWZ;
-            }
+            // Dewis data is not available anymore:
+            //if (TeamToClubPlayerNuLigaIdToDwzMapping.GetValueOrDefault(teamName ?? "")?
+            //    .TryGetValue(ExtractNuLigaPersonIdFromUrl(playerUrl) ?? 0, out var dewisDWZ) == true)
+            //{
+            //    playerDetails.DWZ = dewisDWZ;
+            //}
 
             if (tables.Count > 1)
             {
@@ -627,11 +639,12 @@ namespace NuLigaViewer
                         RelatedTeamPairing = dummyTp
                     };
 
-                    if (opponentUrl != null && TeamToClubPlayerNuLigaIdToDwzMapping.GetValueOrDefault(opponentTeamName)?
-                        .TryGetValue(ExtractNuLigaPersonIdFromUrl(opponentUrl) ?? 0, out var opponentDewisDWZ) == true)
-                    {
-                        pairing.GastSpielerDWZ = opponentDewisDWZ;
-                    }
+                    // Dewis data is not available anymore:
+                    //if (opponentUrl != null && TeamToClubPlayerNuLigaIdToDwzMapping.GetValueOrDefault(opponentTeamName)?
+                    //    .TryGetValue(ExtractNuLigaPersonIdFromUrl(opponentUrl) ?? 0, out var opponentDewisDWZ) == true)
+                    //{
+                    //    pairing.GastSpielerDWZ = opponentDewisDWZ;
+                    //}
 
                     // If date is empty, it is a second pairing for the same gameday.
                     if (string.IsNullOrEmpty(cells[0].InnerText.Replace("&nbsp;", "")))
