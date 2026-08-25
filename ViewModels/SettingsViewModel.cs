@@ -68,8 +68,11 @@ namespace NuLigaViewer.ViewModels
                 try
                 {
                     Preferences.Default.Set("year", value);
-                    var regions = NuLigaParser.ParseLeagues(value, Category.Open);
-                    NavigationState.SelectedRegionsViewModel.LoadRegions(value, regions);
+
+                    var category = NavigationState.SelectedRegionsViewModel.Category;
+                    var regions = NuLigaParser.ParseLeagues(value, category);
+                    NavigationState.SelectedRegionsViewModel.Year = value;
+                    NavigationState.SelectedRegionsViewModel.LoadLeaguesFromRegions(regions);
                 }
                 catch (Exception ex)
                 {

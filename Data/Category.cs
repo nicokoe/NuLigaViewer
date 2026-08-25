@@ -2,7 +2,7 @@ namespace NuLigaViewer.Data
 {
     public enum Category
     {
-        Open,
+        Verbandsrunde,
         Jugend,
         Senioren,
         Pokal

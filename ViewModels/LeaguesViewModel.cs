@@ -5,13 +5,40 @@ using System.Windows.Input;
 
 namespace NuLigaViewer.ViewModels
 {
+    public class BadenRegion : ObservableCollection<League>
+    {
+        public string Name { get; set; }
+
+        public BadenRegion(string name, ObservableCollection<League> leagues) : base(leagues)
+        {
+            Name = name;
+        }
+    }
+
     public class LeaguesViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<BadenRegion> Regions { get; } = new();
-
         public LeaguesViewModel()
         {
             _settingsCommand = new RelayCommand(GoToSettings, () => true);
+
+            var preferedCategory = Preferences.Default.Get("category", "Verbandsrunde");
+            _category = (Category)Enum.Parse(typeof(Category), preferedCategory);
+
+            Regions =
+            [
+                new("Baden", []),
+                new("Mannheim", []),
+                new("Heidelberg", []),
+                new("Karlsruhe", []),
+                new("Pforzheim", []),
+                new("Mittelbaden", []),
+                new("Ortenau", []),
+                new("Odenwald", []),
+                new("Freiburg", []),
+                new("Hochrhein", []),
+                new("Schwarzwald", []),
+                new("Bodensee", []),
+            ];
         }
 
         private string _year = string.Empty;
@@ -31,14 +58,46 @@ namespace NuLigaViewer.ViewModels
 
         private readonly RelayCommand _settingsCommand;
         public ICommand SettingsCommand => _settingsCommand;
+        public ObservableCollection<BadenRegion> Regions { get; }
+        public IEnumerable<Category> Categories => Enum.GetValues<Category>();
 
-        public void LoadRegions(string year, IEnumerable<BadenRegion> regions)
+        private Category _category;
+        public Category Category
         {
-            Year = year;
-            Regions.Clear();
-            foreach (var region in regions)
+            get => _category;
+            set
             {
-                Regions.Add(region);
+                if (_category == value)
+                {
+                    return;
+                }
+                _category = value;
+
+                try
+                {
+                    Preferences.Default.Set("category", value.ToString());
+
+                    var regions = NuLigaParser.ParseLeagues(Year, value);
+                    LoadLeaguesFromRegions(regions);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                }
+
+                OnPropertyChanged(nameof(Category));
+            }
+        }
+
+        public void LoadLeaguesFromRegions(List<List<League>> regions)
+        {
+            for (int i = 0; i < regions.Count(); i++)
+            {
+                Regions[i].Clear();
+                foreach (var league in regions.ElementAt(i))
+                {
+                    Regions[i].Add(league);
+                }
             }
         }
 

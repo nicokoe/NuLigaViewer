@@ -9,6 +9,7 @@ namespace NuLigaViewer
     {
         private static readonly string urlRoot = "https://bsv-schach.liga.nu/";
         private static readonly HtmlWeb web = new();
+        private static readonly ConcurrentDictionary<string, List<List<League>>> _cachedLeagues = new();
         private static readonly ConcurrentDictionary<string, HtmlNodeCollection?> _cachedTeamPages = new();
         private static readonly ConcurrentDictionary<string, Tuple<string?, Dictionary<int, DewisClubPlayer>?>> _cachedDewisClubPlayers = new();
         private static readonly ConcurrentDictionary<string, List<ClubPlayer>> _cachedClubPlayers = new();
@@ -21,9 +22,14 @@ namespace NuLigaViewer
 
         public static event Action<League, TeamPairing>? TeamPairingReportLoadedForGui;
 
-        public static List<BadenRegion> ParseLeagues(string year, Category category)
+        public static List<List<League>> ParseLeagues(string year, Category category)
         {
-            var regions = new List<BadenRegion>();
+            if (_cachedLeagues.TryGetValue($"{year}_{category}", out var cachedRegions))
+            {
+                return cachedRegions;
+            }
+
+            var regions = new List<List<League>>();
             var badenLeagues = new List<string>
             {
                 "Baden",
@@ -40,22 +46,29 @@ namespace NuLigaViewer
                 "Bodensee",
             };
 
+            var success = true;
             var urlYear = YearConvertions.ConvertYearToUrlFormat(year);
             foreach (var region in badenLeagues)
             {
                 try
                 {
                     var url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+{urlYear}";
-                    if (category != Category.Open)
+                    if (category != Category.Verbandsrunde)
                     {
                         url = $"{urlRoot}cgi-bin/WebObjects/nuLigaSCHACHDE.woa/wa/leaguePage?championship={region}+{category}+{urlYear}";
                     }
-                    regions.Add(new BadenRegion(name: region, leagues: ParseLeaguesFromUrl(web, url, year, region, category)));
+                    regions.Add(ParseLeaguesFromUrl(web, url, year, region, category));
                 }
                 catch (Exception e)
                 {
+                    success = false;
                     System.Diagnostics.Debug.WriteLine(e.ToString());
                 }
+            }
+
+            if (success)
+            {
+                _cachedLeagues[$"{year}_{category}"] = regions;
             }
 
             return regions;
@@ -501,7 +514,7 @@ namespace NuLigaViewer
             }
 
             var year = NavigationState.SelectedLeagueViewModel.League?.Year ?? string.Empty;
-            var category = NavigationState.SelectedLeagueViewModel.League?.Category ?? Category.Open;
+            var category = NavigationState.SelectedLeagueViewModel.League?.Category ?? Category.Verbandsrunde;
             if (_cachedClubPlayers.TryGetValue($"{clubLineUpsUrl}_{year}_{category}", out var cachedClubsPlayers))
             {
                 return cachedClubsPlayers;

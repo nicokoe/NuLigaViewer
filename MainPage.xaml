@@ -9,10 +9,19 @@
     </ContentPage.ToolbarItems>
 
     <Grid Padding="4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <CollectionView Grid.Row="0"
+        <Label Style="{StaticResource SettingsLeftLabelStyle}" Grid.Row="0" Grid.Column="0">Kategorie</Label>
+        <Picker Grid.Row="0" Grid.Column="1" Title=""
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding Category}" />
+        <CollectionView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                         ItemsSource="{Binding Regions}"
                         IsGrouped="True"
                         SelectionMode="Single"

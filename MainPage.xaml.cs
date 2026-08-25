@@ -9,9 +9,13 @@ namespace NuLigaViewer
             InitializeComponent();
 
             var year = Preferences.Default.Get("year", "2026/27");
-            var regions = NuLigaParser.ParseLeagues(year, Category.Open);
+            var preferedCategory = Preferences.Default.Get("category", "Verbandsrunde");
+            var category = (Category)Enum.Parse(typeof(Category), preferedCategory);
+            var regions = NuLigaParser.ParseLeagues(year, category);
 
-            NavigationState.SelectedRegionsViewModel.LoadRegions(year, regions);
+            NavigationState.SelectedRegionsViewModel.Year = year;
+            NavigationState.SelectedRegionsViewModel.Category = category;
+            NavigationState.SelectedRegionsViewModel.LoadLeaguesFromRegions(regions);
             BindingContext = NavigationState.SelectedRegionsViewModel;
         }
 
