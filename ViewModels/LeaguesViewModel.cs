@@ -23,22 +23,6 @@ namespace NuLigaViewer.ViewModels
 
             var preferedCategory = Preferences.Default.Get("category", "Verbandsrunde");
             _category = (Category)Enum.Parse(typeof(Category), preferedCategory);
-
-            Regions =
-            [
-                new("Baden", []),
-                new("Mannheim", []),
-                new("Heidelberg", []),
-                new("Karlsruhe", []),
-                new("Pforzheim", []),
-                new("Mittelbaden", []),
-                new("Ortenau", []),
-                new("Odenwald", []),
-                new("Freiburg", []),
-                new("Hochrhein", []),
-                new("Schwarzwald", []),
-                new("Bodensee", []),
-            ];
         }
 
         private string _year = string.Empty;
@@ -58,7 +42,7 @@ namespace NuLigaViewer.ViewModels
 
         private readonly RelayCommand _settingsCommand;
         public ICommand SettingsCommand => _settingsCommand;
-        public ObservableCollection<BadenRegion> Regions { get; }
+        public ObservableCollection<BadenRegion> Regions { get; } = new ObservableCollection<BadenRegion>();
         public IEnumerable<Category> Categories => Enum.GetValues<Category>();
 
         private Category _category;
@@ -91,12 +75,23 @@ namespace NuLigaViewer.ViewModels
 
         public void LoadLeaguesFromRegions(List<List<League>> regions)
         {
+            foreach(var region in Regions)
+            {
+                region.Clear();
+            }
+            Regions.Clear();
+
             for (int i = 0; i < regions.Count(); i++)
             {
-                Regions[i].Clear();
-                foreach (var league in regions.ElementAt(i))
+                var leagues = regions.ElementAt(i);
+                if (leagues.Count > 0)
                 {
-                    Regions[i].Add(league);
+                    var newRegion = new BadenRegion(leagues.First().Region, new ObservableCollection<League>());
+                    Regions.Add(newRegion);
+                    foreach (var league in leagues)
+                    {
+                        newRegion.Add(league);
+                    }
                 }
             }
         }

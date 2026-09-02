@@ -4,7 +4,7 @@ namespace NuLigaViewer.Data
     {
         Verbandsrunde,
         Jugend,
-        Senioren,
-        Pokal
+        //Senioren,
+        //Pokal
     }
 }

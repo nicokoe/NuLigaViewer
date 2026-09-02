@@ -47,10 +47,6 @@
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
-            <CollectionView.EmptyView>
-                <Label Text="Keine Ligen verfügbar" HorizontalOptions="Center" VerticalOptions="Center" />
-            </CollectionView.EmptyView>
         </CollectionView>
     </Grid>
 </ContentPage>

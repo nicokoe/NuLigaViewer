@@ -7,6 +7,22 @@ namespace NuLigaViewer
 {
     public static class NuLigaParser
     {
+        public static List<string> AllRegionsInBaden =
+            [
+                "Baden",
+                "Mannheim",
+                "Heidelberg",
+                "Karlsruhe",
+                "Pforzheim",
+                "Mittelbaden",
+                "Ortenau",
+                "Odenwald",
+                "Freiburg",
+                "Hochrhein",
+                "Schwarzwald",
+                "Bodensee",
+            ];
+
         private static readonly string urlRoot = "https://bsv-schach.liga.nu/";
         private static readonly HtmlWeb web = new();
         private static readonly ConcurrentDictionary<string, List<List<League>>> _cachedLeagues = new();
@@ -30,25 +46,10 @@ namespace NuLigaViewer
             }
 
             var regions = new List<List<League>>();
-            var badenLeagues = new List<string>
-            {
-                "Baden",
-                "Mannheim",
-                "Heidelberg",
-                "Karlsruhe",
-                "Pforzheim",
-                "Mittelbaden",
-                "Ortenau",
-                "Odenwald",
-                "Freiburg",
-                "Hochrhein",
-                "Schwarzwald",
-                "Bodensee",
-            };
 
             var success = true;
             var urlYear = YearConvertions.ConvertYearToUrlFormat(year);
-            foreach (var region in badenLeagues)
+            foreach (var region in AllRegionsInBaden)
             {
                 try
                 {
