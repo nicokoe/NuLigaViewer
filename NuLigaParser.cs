@@ -538,12 +538,21 @@ namespace NuLigaViewer
                 for (var lineUpIndex = 0; lineUpIndex < lineUps.Count; lineUpIndex++)
                 {
                     var cells = lineUps[lineUpIndex].SelectNodes("th|td");
-
-                    var lineUpFound = cells.Any(x => x.InnerHtml.Contains("Punktspielbetrieb")
-                                            && x.InnerHtml.Contains(year)
-                                            && !x.InnerHtml.Contains("Senioren")
-                                            && !x.InnerHtml.Contains("Jugend")
-                                            && !x.InnerHtml.Contains("Pokal"));
+                    var lineUpFound = false;
+                    if (category == Category.Verbandsrunde)
+                    {
+                        lineUpFound = cells.Any(x => x.InnerHtml.Contains("Punktspielbetrieb")
+                                                && x.InnerHtml.Contains(year)
+                                                && !x.InnerHtml.Contains("Senioren")
+                                                && !x.InnerHtml.Contains("Jugend")
+                                                && !x.InnerHtml.Contains("Pokal"));
+                    }
+                    else
+                    {
+                        lineUpFound = cells.Any(x => x.InnerHtml.Contains("Punktspielbetrieb")
+                                                && x.InnerHtml.Contains(year)
+                                                && x.InnerHtml.Contains(category.ToString()));
+                    }
                     if (lineUpFound && lineUpIndex + 2 < lineUps.Count)
                     {
                         var lineUpRoute = lineUps[lineUpIndex + 2].SelectNodes("th|td")[1].QuerySelector("a").Attributes["href"].Value.Replace("&amp;", "&");
